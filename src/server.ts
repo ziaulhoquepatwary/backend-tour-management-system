@@ -2,13 +2,14 @@
 import type { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app.js";
+import { envVars } from "./app/config/env.js";
 
 let server: Server;
-const PORT = 5000;
+const PORT = envVars.PORT;
 
 const startServer = async () => {
     try {
-        await mongoose.connect("mongodb+srv://tour-management:jIBaKPb6uD494iVB@cluster0.kogn06a.mongodb.net/tourManagementDB?appName=Cluster0");
+        await mongoose.connect(envVars.DB_URL);
 
         console.log("Connnected to MongoDB using Mongoose!!");
 
