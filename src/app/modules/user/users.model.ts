@@ -1,38 +1,37 @@
-import { Types } from "mongoose";
+import { model, Schema } from "mongoose";
+import { IsActive, Role, type IAuthProvider, type IUser } from "./user.interfaces.js";
 
-export enum IsActive {
-    ACTIVE = "ACTIVE",
-    INACTIVE = "INACTIVE",
-    BLOCKED = "BLOCKED"
-}
+const authProviderSchema = new Schema<IAuthProvider>({
+    provider: { type: String, required: true },
+    providerId: { type: String, required: true }
+}, {
+    versionKey: false,
+    _id: false
+})
 
-export enum Role {
-    SUPER_ADMIN = "SUPER_ADMIN",
-    ADMIN = "ADMIN",
-    USER = "USER",
-    GUIDE = "GUIDE",
-}
+const userSchema = new Schema<IUser>({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String },
+    role: {
+        type: String,
+        enum: Object.values(Role),
+        default: Role.USER
+    },
+    phone: { type: String },
+    picture: { type: String },
+    address: { type: String },
+    isDeleted: { type: Boolean, default: false },
+    isActive: {
+        type: String,
+        enum: Object.values(IsActive),
+        default: IsActive.ACTIVE
+    },
+    isVerified: { type: Boolean, default: false },
+    auths: [authProviderSchema]
+}, {
+    timestamps: true,
+    versionKey: false
+})
 
-export interface IAuthProvider {
-    provider: "google" | "credentials";  // "Google", "Credential"
-    providerId: string;
-}
-
-export interface IUser {
-    _id?: Types.ObjectId
-    name: string;
-    email: string;
-    password?: string;
-    phone?: string;
-    picture?: string;
-    address?: string;
-    isDeleted?: string;
-    isActive?: IsActive;
-    isVerified?: boolean;
-    role: Role;
-    auths: IAuthProvider[];
-    bookings?: Types.ObjectId[];
-    guides?: Types.ObjectId[];
-    createdAt?: Date
-
-}
+export const User = model<IUser>("User", userSchema);
