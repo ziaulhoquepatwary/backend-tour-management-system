@@ -26,6 +26,18 @@ const createUser = async (req: Request, res: Response) => {
     }
 }
 
+const getAllUsers = async (req: Request, res: Response) => {
+    const query = req.query;
+
+    res.status(httpStatusCode.OK).json({
+        success: true,
+        message: "All Users Retrieved Successfully",
+        data: query
+    })
+
+}
+
 export const userControllers = {
-    createUser
+    createUser,
+    getAllUsers
 }
