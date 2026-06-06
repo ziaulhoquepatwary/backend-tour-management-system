@@ -3,6 +3,7 @@ import type { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app.js";
 import { envVars } from "./app/config/env.js";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin.js";
 
 let server: Server;
 const PORT = envVars.PORT;
@@ -21,7 +22,10 @@ const startServer = async () => {
     }
 }
 
-startServer();
+(async () => {
+    await startServer()
+    await seedSuperAdmin()
+})()
 
 // unhandle rejection error:
 process.on("unhandledRejection", (err) => {
